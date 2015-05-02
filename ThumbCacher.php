@@ -1,7 +1,7 @@
 <?php
-/**  
+/**
  * Class for creating caches for thumbs.
- *   
+ *
  *  @package    app.Vendor
  *  @category   vendors
  *  @author     Rafael F. Silva <rafael@omochi.com.br>
@@ -36,7 +36,7 @@ class ThumbCacher
 
 	/**
 	 * Sets the physical folder.
-	 *   
+	 *
  	 *  @author     Rafael F. Silva <rafael@omochi.com.br>
 	 *  @param      (string) $path
 	 *  @since      1.0.0
@@ -53,7 +53,7 @@ class ThumbCacher
 
 	/**
 	 * Sets the virtual folder.
-	 *   
+	 *
  	 *  @author     Rafael F. Silva <rafael@omochi.com.br>
 	 *  @param      (string) $path
 	 *  @since      1.0.0
@@ -70,7 +70,7 @@ class ThumbCacher
 
 	/**
 	 * Get the especified image. If it does not exists in cache, it will be created.
-	 *   
+	 *
  	 *  @author     Rafael F. Silva <rafael@omochi.com.br>
 	 *  @param      (string) $originalURL
 	 *  @param      (array) $options
@@ -179,11 +179,11 @@ class ThumbCacher
 			{
 				$cached = true;
 			}
-		} 
+		}
 
 		// If it is not in cache
 		if( $cached === false )
-		{ 
+		{
 			// Creates an image object from the original
 			$image = call_user_func('imagecreatefrom' . self::$_allowedExtensions[$type], $originalPath);
 
@@ -191,6 +191,14 @@ class ThumbCacher
 			if( function_exists('imagecreatetruecolor') )
 			{
 				$temp = imagecreatetruecolor($resizedWidth, $resizedHeight);
+
+				if( $type == IMAGETYPE_GIF || $type == IMAGETYPE_PNG )
+				{
+					imagecolortransparent($temp, imagecolorallocatealpha($temp, 0, 0, 0, 127));
+					imagealphablending($temp, false);
+					imagesavealpha($temp, true);
+				}
+
 				imagecopyresampled($temp, $image, 0, 0, $finalX, $finalY, $resizedWidth, $resizedHeight, $finalWidth, $finalHeight);
 			}
 
@@ -199,7 +207,7 @@ class ThumbCacher
 			{
 				$temp = imagecreate($resizedWidth, $resizedHeight);
 				imagecopyresized($temp, $image, 0, 0, $finalX, $finalY, $resizedWidth, $resizedHeight, $finalWidth, $finalHeight);
-			} 
+			}
 
 			switch( $type )
 			{
